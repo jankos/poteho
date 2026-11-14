@@ -63,7 +63,7 @@ export class PokerTable extends LitElement {
     .felt {
       position: relative;
       height: 100%;
-      min-height: 420px;
+      min-height: 0;
       border-radius: 24px;
       background: radial-gradient(ellipse at 50% 42%, #14634a 0%, #0d4a35 45%, #07271e 100%);
       box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.55), 0 8px 30px rgba(0, 0, 0, 0.4);

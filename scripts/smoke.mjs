@@ -59,9 +59,14 @@ await new Promise((r) => setTimeout(r, 50));
 check('game created', app.game !== null);
 check('hand started', app.game.phase === 'preflop');
 check('5 seats rendered', pierceAll(app.shadowRoot, 'player-seat').length === 5);
-const heroSeat = pierceAll(app.shadowRoot, 'player-seat').find((el) => el.isHero === true);
+const seats = pierceAll(app.shadowRoot, 'player-seat');
+const heroSeat = seats.find((el) => el.isHero === true);
 check('hero seat found', Boolean(heroSeat));
 check('hero has 2 cards rendered', heroSeat ? heroSeat.shadowRoot.querySelectorAll('card-el').length === 2 : false);
+check('hero cards are face up', heroSeat ? [...heroSeat.shadowRoot.querySelectorAll('card-el')].every((c) => c.faceDown === false) : false);
+check('every seat is positioned on the host', seats.length === 5 && seats.every((el) => /left: [\d.]+%; top: [\d.]+%/.test(el.getAttribute('style') || '')));
+check('seats spread around the table (distinct positions)', new Set(seats.map((el) => el.getAttribute('style'))).size === 5);
+check('bot cards are face down during play', seats.filter((el) => !el.isHero).every((el) => [...el.shadowRoot.querySelectorAll('card-el')].every((c) => c.faceDown === true)));
 check('coach panel renders', app.shadowRoot.querySelector('hint-panel') !== null);
 
 async function playHand() {

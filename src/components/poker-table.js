@@ -45,11 +45,10 @@ export class PokerTable extends LitElement {
         ${s.players.map((p, i) => {
           const pos = seatPosition(i, n);
           return html`<player-seat
+            style="left: ${pos.x}%; top: ${pos.y}%;"
             .player=${p}
             .isHero=${p.id === this.heroId}
             ?showCards=${showCards}
-            .x=${pos.x}
-            .y=${pos.y}
           ></player-seat>`;
         })}
         <div class="feed">

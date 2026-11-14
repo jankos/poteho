@@ -6,8 +6,6 @@ export class PlayerSeat extends LitElement {
     player: { type: Object },
     isHero: { type: Boolean },
     showCards: { type: Boolean },
-    x: { type: Number },
-    y: { type: Number },
   };
 
   constructor() {
@@ -15,8 +13,6 @@ export class PlayerSeat extends LitElement {
     this.player = null;
     this.isHero = false;
     this.showCards = false;
-    this.x = 50;
-    this.y = 50;
   }
 
   render() {
@@ -31,7 +27,7 @@ export class PlayerSeat extends LitElement {
     ].join(' ');
     const reveal = this.showCards || this.isHero;
     return html`
-      <div class=${classes} style="left: ${this.x}%; top: ${this.y}%;">
+      <div class=${classes}>
         <div class="cards">
           ${p.hand.length
             ? p.hand.map((c) => html`<card-el .card=${c} ?faceDown=${!reveal} small></card-el>`)

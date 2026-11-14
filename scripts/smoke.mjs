@@ -68,6 +68,7 @@ check('every seat is positioned on the host', seats.length === 5 && seats.every(
 check('seats spread around the table (distinct positions)', new Set(seats.map((el) => el.getAttribute('style'))).size === 5);
 check('bot cards are face down during play', seats.filter((el) => !el.isHero).every((el) => [...el.shadowRoot.querySelectorAll('card-el')].every((c) => c.faceDown === true)));
 check('coach panel renders', app.shadowRoot.querySelector('hint-panel') !== null);
+check('action area always reserved (no layout jump)', pierce(app.shadowRoot, '.action-wrap') !== null && pierce(app.shadowRoot, '.action-wrap .waiting') !== null);
 
 async function playHand() {
   let guard = 0;

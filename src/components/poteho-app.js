@@ -45,6 +45,9 @@ export class PotehoApp extends LitElement {
   }
 
   firstUpdated() {
+    if (typeof window.matchMedia === 'function') {
+      this.showHints = window.matchMedia('(min-width: 761px)').matches;
+    }
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.installEvent = e;
@@ -218,16 +221,16 @@ export class PotehoApp extends LitElement {
         <section class="table-wrap">
           <poker-table .snap=${this.snap} heroId=${HERO_ID} .feed=${this.feed}></poker-table>
           ${this.renderBanner()}
-          ${legal ? html`
-            <div class="action-wrap">
+          <div class="action-wrap">
+            ${legal ? html`
               <action-bar
                 .legal=${legal}
                 .pot=${this.snap.pot}
                 .currentBet=${this.snap.currentBet}
                 @act=${(e) => this.onAct(e)}
               ></action-bar>
-            </div>
-          ` : ''}
+            ` : html`<div class="waiting">${this.snap?.phase === 'complete' ? '' : 'Waiting for opponents…'}</div>`}
+          </div>
         </section>
         ${this.showHints ? html`<hint-panel .snap=${this.snap} heroId=${HERO_ID} .legal=${legal} .enabled=${this.showHints}></hint-panel>` : ''}
       </main>
@@ -241,6 +244,7 @@ export class PotehoApp extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100dvh;
+      overflow: hidden;
       background: #07271e;
       color: #eceff1;
       font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -278,12 +282,18 @@ export class PotehoApp extends LitElement {
       gap: 12px;
       padding: 12px;
       min-height: 0;
+      overflow: hidden;
       position: relative;
     }
-    .table-wrap { flex: 1; position: relative; display: flex; flex-direction: column; min-width: 0; }
+    .table-wrap { flex: 1; position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
     poker-table { flex: 1; min-height: 0; }
-    .action-wrap { padding-top: 10px; flex: none; }
-    hint-panel { width: 264px; flex: none; align-self: flex-start; position: sticky; top: 0; }
+    .action-wrap { padding-top: 10px; flex: none; min-height: 86px; }
+    .waiting {
+      min-height: 76px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255, 255, 255, 0.45); font-size: 13px;
+    }
+    hint-panel { width: 264px; flex: none; align-self: flex-start; }
     .banner {
       position: absolute;
       left: 50%; top: 38%;
@@ -310,7 +320,15 @@ export class PotehoApp extends LitElement {
     hand-log[open] { pointer-events: auto; }
     @media (max-width: 760px) {
       main { flex-direction: column; }
-      hint-panel { width: 100%; position: static; }
+      hint-panel {
+        position: absolute;
+        top: 8px; right: 8px;
+        width: min(250px, 72vw);
+        max-height: 55%;
+        overflow-y: auto;
+        z-index: 15;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      }
       .hand-no { display: none; }
     }
   `;
